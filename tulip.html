@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Your Favorite Flower Tulip</title>
+
+    <style>
+        /* =========================
+           BASIC PAGE STYLING
+        ========================== */
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            background:
+                radial-gradient(circle at 50% 20%,
+                    rgba(255, 255, 255, 0.8),
+                    transparent 35%),
+                linear-gradient(
+                    160deg,
+                    #dff5ff,
+                    #f8e8ff,
+                    #fff5df
+                );
+        }
+
+        .garden {
+            width: 100%;
+            height: 100vh;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            position: relative;
+        }
+
+        /* =========================
+           TULIP CONTAINER
+        ========================== */
+
+        .tulip-wrapper {
+            position: relative;
+            width: 300px;
+            height: 480px;
+
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+
+            cursor: pointer;
+
+            animation: sway 4s ease-in-out infinite;
+            transform-origin: bottom center;
+        }
+
+        /* Ground shadow */
+
+        .ground-shadow {
+            position: absolute;
+            bottom: 18px;
+            left: 50%;
+
+            width: 170px;
+            height: 25px;
+
+            background: rgba(70, 100, 70, 0.15);
+            border-radius: 50%;
+
+            transform: translateX(-50%);
+            filter: blur(5px);
+        }
+
+        /* =========================
+           STEM
+        ========================== */
+
+        .stem {
+            position: absolute;
+
+            width: 22px;
+            height: 270px;
+
+            bottom: 45px;
+            left: 50%;
+
+            transform: translateX(-50%);
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #236b3b,
+                    #58a95d,
+                    #2c783f
+                );
+
+            border-radius: 50% 50% 30% 30%;
+            box-shadow:
+                inset 3px 0 4px rgba(255,255,255,0.2),
+                inset -3px 0 5px rgba(0,0,0,0.15);
+
+            z-index: 2;
+        }
+
+        /* =========================
+           LEAVES
+        ========================== */
+
+        .leaf {
+            position: absolute;
+
+            width: 135px;
+            height: 55px;
+
+            bottom: 100px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #2f7e3f,
+                    #72b95f,
+                    #397f43
+                );
+
+            border-radius: 100% 0 100% 0;
+
+            z-index: 1;
+
+            transition:
+                transform 0.8s ease,
+                filter 0.8s ease;
+        }
+
+        .leaf::after {
+            content: "";
+
+            position: absolute;
+
+            width: 85%;
+            height: 2px;
+
+            top: 50%;
+            left: 8%;
+
+            background: rgba(255,255,255,0.28);
+
+            transform: rotate(-8deg);
+        }
+
+        .leaf-left {
+            left: 10px;
+            transform:
+                rotate(25deg)
+                skewX(-5deg);
+            transform-origin: right center;
+        }
+
+        .leaf-right {
+            right: 10px;
+
+            transform:
+                scaleX(-1)
+                rotate(25deg)
+                skewX(-5deg);
+
+            transform-origin: left center;
+        }
+
+        /* =========================
+           FLOWER
+        ========================== */
+
+        .flower {
+            position: absolute;
+
+            top: 45px;
+            left: 50%;
+
+            width: 190px;
+            height: 190px;
+
+            transform: translateX(-50%);
+
+            z-index: 5;
+
+            transition: transform 1s ease;
+        }
+
+        /* Individual petals */
+
+        .petal {
+            position: absolute;
+
+            width: 92px;
+            height: 145px;
+
+            top: 15px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #ff9bb5,
+                    #e94370 55%,
+                    #b91f52
+                );
+
+            border-radius:
+                55% 55% 35% 35%
+                / 70% 70% 30% 30%;
+
+            box-shadow:
+                inset 8px 0 10px rgba(255,255,255,0.16),
+                inset -8px -8px 12px rgba(120,0,40,0.13);
+
+            transition:
+                transform 1s cubic-bezier(.2,.8,.2,1),
+                height 1s ease,
+                filter 0.8s ease;
+        }
+
+        /* Left petal */
+
+        .petal-left {
+            left: 8px;
+
+            transform:
+                rotate(-22deg)
+                translateY(8px);
+
+            transform-origin: bottom center;
+        }
+
+        /* Center petal */
+
+        .petal-center {
+            left: 49px;
+
+            width: 92px;
+            height: 155px;
+
+            z-index: 4;
+
+            background:
+                linear-gradient(
+                    160deg,
+                    #ffb2c7,
+                    #ef4b77 55%,
+                    #c12757
+                );
+
+            transform:
+                rotate(0deg)
+                translateY(-4px);
+
+            transform-origin: bottom center;
+        }
+
+        /* Right petal */
+
+        .petal-right {
+            right: 8px;
+
+            transform:
+                rotate(22deg)
+                translateY(8px);
+
+            transform-origin: bottom center;
+        }
+
+        /* Small inner petals */
+
+        .petal-inner-left,
+        .petal-inner-right {
+            position: absolute;
+
+            width: 68px;
+            height: 125px;
+
+            top: 30px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #ffabc1,
+                    #ec426e
+                );
+
+            border-radius:
+                60% 60% 35% 35%;
+
+            z-index: 3;
+
+            transition:
+                transform 1s ease,
+                opacity 0.8s ease;
+        }
+
+        .petal-inner-left {
+            left: 34px;
+            transform: rotate(-9deg);
+        }
+
+        .petal-inner-right {
+            right: 34px;
+            transform: rotate(9deg);
+        }
+
+        /* Petal highlight */
+
+        .petal::after,
+        .petal-inner-left::after,
+        .petal-inner-right::after {
+            content: "";
+
+            position: absolute;
+
+            width: 16px;
+            height: 70%;
+
+            top: 12px;
+            left: 30%;
+
+            border-radius: 50%;
+
+            background:
+                linear-gradient(
+                    transparent,
+                    rgba(255,255,255,0.2),
+                    transparent
+                );
+
+            transform: rotate(5deg);
+        }
+
+        /* =========================
+           BLOOM STATE
+        ========================== */
+
+        .tulip-wrapper.bloom .petal-left {
+            transform:
+                rotate(-42deg)
+                translate(-28px, 10px)
+                scaleY(0.96);
+        }
+
+        .tulip-wrapper.bloom .petal-right {
+            transform:
+                rotate(42deg)
+                translate(28px, 10px)
+                scaleY(0.96);
+        }
+
+        .tulip-wrapper.bloom .petal-center {
+            transform:
+                translateY(-24px)
+                scaleY(0.9);
+        }
+
+        .tulip-wrapper.bloom .petal-inner-left {
+            transform:
+                rotate(-24deg)
+                translateX(-14px);
+        }
+
+        .tulip-wrapper.bloom .petal-inner-right {
+            transform:
+                rotate(24deg)
+                translateX(14px);
+        }
+
+        .tulip-wrapper.bloom .leaf-left {
+            transform:
+                rotate(12deg)
+                translateX(-8px);
+        }
+
+        .tulip-wrapper.bloom .leaf-right {
+            transform:
+                scaleX(-1)
+                rotate(12deg)
+                translateX(-8px);
+        }
+
+        /* =========================
+           SWAY ANIMATION
+        ========================== */
+
+        @keyframes sway {
+            0%, 100% {
+                transform: rotate(-1.5deg);
+            }
+
+            50% {
+                transform: rotate(1.5deg);
+            }
+        }
+
+        /* Slight natural petal movement */
+
+        .petal-left {
+            animation: petalFloatLeft 4s ease-in-out infinite;
+        }
+
+        .petal-right {
+            animation: petalFloatRight 4.5s ease-in-out infinite;
+        }
+
+        @keyframes petalFloatLeft {
+            0%, 100% {
+                margin-top: 0;
+            }
+
+            50% {
+                margin-top: 3px;
+            }
+        }
+
+        @keyframes petalFloatRight {
+            0%, 100% {
+                margin-top: 2px;
+            }
+
+            50% {
+                margin-top: -2px;
+            }
+        }
+
+        /* =========================
+           BUTTONS
+        ========================== */
+
+        .controls {
+            display: flex;
+            gap: 14px;
+
+            margin-top: -10px;
+
+            z-index: 20;
+        }
+
+        button {
+            border: none;
+
+            padding: 12px 25px;
+
+            border-radius: 30px;
+
+            font-size: 15px;
+            font-weight: bold;
+
+            cursor: pointer;
+
+            color: #ffffff;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #e84c78,
+                    #bd315c
+                );
+
+            box-shadow:
+                0 8px 20px rgba(170, 40, 80, 0.2);
+
+            transition:
+                transform 0.25s ease,
+                box-shadow 0.25s ease;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+
+            box-shadow:
+                0 12px 25px rgba(170, 40, 80, 0.3);
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        #resetBtn {
+            background:
+                linear-gradient(
+                    135deg,
+                    #5f9270,
+                    #3d7552
+                );
+        }
+
+        /* =========================
+           FLOATING EFFECTS
+        ========================== */
+
+        .effect {
+            position: fixed;
+
+            pointer-events: none;
+
+            font-size: 20px;
+
+            animation:
+                floatUp 1.5s ease-out forwards;
+
+            z-index: 100;
+        }
+
+        @keyframes floatUp {
+            0% {
+                opacity: 1;
+                transform:
+                    translateY(0)
+                    scale(0.7)
+                    rotate(0deg);
+            }
+
+            100% {
+                opacity: 0;
+
+                transform:
+                    translateY(-120px)
+                    scale(1.4)
+                    rotate(25deg);
+            }
+        }
+
+        /* =========================
+           TITLE
+        ========================== */
+
+        .title {
+            position: absolute;
+
+            top: 35px;
+
+            text-align: center;
+
+            color: #477052;
+
+            letter-spacing: 2px;
+        }
+
+        .title h1 {
+            font-size: clamp(25px, 5vw, 40px);
+
+            font-weight: 600;
+        }
+
+        .title p {
+            margin-top: 7px;
+
+            font-size: 14px;
+
+            color: #77917d;
+        }
+
+        /* =========================
+           RESPONSIVE DESIGN
+        ========================== */
+
+        @media (max-width: 500px) {
+
+            .tulip-wrapper {
+                transform: scale(0.82);
+                transform-origin: bottom center;
+            }
+
+            .tulip-wrapper:hover {
+                transform: scale(0.82);
+            }
+
+            .controls {
+                margin-top: -45px;
+            }
+
+            .title {
+                top: 25px;
+            }
+
+            button {
+                padding: 11px 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="garden">
+
+        <!-- Page heading -->
+        <header class="title">
+            <h1>Little Tulip</h1>
+            <p>Click the flower to make it bloom</p>
+        </header>
+
+
+        <!-- =========================
+             TULIP
+        ========================== -->
+
+        <div
+            class="tulip-wrapper"
+            id="tulip"
+            aria-label="Interactive tulip flower"
+            role="button"
+            tabindex="0"
+        >
+
+            <!-- Flower -->
+            <div class="flower">
+
+                <div class="petal petal-left"></div>
+
+                <div class="petal-inner-left"></div>
+
+                <div class="petal petal-center"></div>
+
+                <div class="petal-inner-right"></div>
+
+                <div class="petal petal-right"></div>
+
+            </div>
+
+
+            <!-- Stem -->
+            <div class="stem"></div>
+
+
+            <!-- Leaves -->
+            <div class="leaf leaf-left"></div>
+            <div class="leaf leaf-right"></div>
+
+
+            <!-- Ground shadow -->
+            <div class="ground-shadow"></div>
+
+        </div>
+
+
+        <!-- Buttons -->
+        <div class="controls">
+
+            <button id="bloomBtn">
+                Bloom
+            </button>
+
+            <button id="resetBtn">
+                Reset
+            </button>
+
+        </div>
+
+    </main>
+
+
+    <script>
+        /* =========================
+           GET HTML ELEMENTS
+        ========================== */
+
+        const tulip = document.getElementById("tulip");
+        const bloomBtn = document.getElementById("bloomBtn");
+        const resetBtn = document.getElementById("resetBtn");
+
+
+        /* =========================
+           CREATE FLOATING EFFECT
+        ========================== */
+
+        function createEffect() {
+
+            const effect = document.createElement("div");
+
+            effect.classList.add("effect");
+
+            // Randomly choose a heart or sparkle
+            const symbols = ["♥", "♡", "✦", "✧", "✨"];
+
+            effect.textContent =
+                symbols[Math.floor(Math.random() * symbols.length)];
+
+
+            // Get flower position
+            const rect = tulip.getBoundingClientRect();
+
+            const randomX =
+                rect.left +
+                rect.width / 2 +
+                (Math.random() * 100 - 50);
+
+            const randomY =
+                rect.top +
+                100 +
+                (Math.random() * 60 - 30);
+
+
+            effect.style.left = randomX + "px";
+            effect.style.top = randomY + "px";
+
+
+            // Random size
+            effect.style.fontSize =
+                (15 + Math.random() * 15) + "px";
+
+
+            document.body.appendChild(effect);
+
+
+            // Remove effect after animation
+            setTimeout(() => {
+                effect.remove();
+            }, 1500);
+        }
+
+
+        /* =========================
+           TOGGLE FLOWER
+        ========================== */
+
+        function toggleBloom() {
+
+            tulip.classList.toggle("bloom");
+
+            // Create multiple effects
+            for (let i = 0; i < 5; i++) {
+
+                setTimeout(() => {
+                    createEffect();
+                }, i * 100);
+
+            }
+        }
+
+
+        /* =========================
+           BLOOM BUTTON
+        ========================== */
+
+        bloomBtn.addEventListener("click", function () {
+
+            tulip.classList.add("bloom");
+
+            for (let i = 0; i < 8; i++) {
+
+                setTimeout(() => {
+                    createEffect();
+                }, i * 100);
+
+            }
+
+        });
+
+
+        /* =========================
+           RESET BUTTON
+        ========================== */
+
+        resetBtn.addEventListener("click", function () {
+
+            tulip.classList.remove("bloom");
+
+        });
+
+
+        /* =========================
+           CLICK FLOWER
+        ========================== */
+
+        tulip.addEventListener("click", function () {
+
+            toggleBloom();
+
+        });
+
+
+        /* =========================
+           KEYBOARD ACCESSIBILITY
+        ========================== */
+
+        tulip.addEventListener("keydown", function (event) {
+
+            if (
+                event.key === "Enter" ||
+                event.key === " "
+            ) {
+
+                event.preventDefault();
+
+                toggleBloom();
+
+            }
+
+        });
+    </script>
+
+</body>
+</html>
